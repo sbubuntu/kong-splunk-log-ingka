@@ -128,15 +128,18 @@ end
 
 
 local function get_queue_id(conf)
-  return fmt("%s:%s:%s:%s:%s:%s",
+  return fmt("%s:%s:%s:%s:%s:%s:%s:%s",
              conf.splunk_endpoint,
              conf.method,
              conf.content_type,
              conf.timeout,
              conf.keepalive,
              conf.retry_count,
+             conf.apim_env,
+             conf.workspace,
              conf.queue_size,
-             conf.flush_timeout)
+             conf.flush_timeout
+             )
 end
 
 
