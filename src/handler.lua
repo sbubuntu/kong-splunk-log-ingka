@@ -187,7 +187,7 @@ end
 
 function KongSplunkLogIngka:access(conf)
   sessionId= uuid()
-  if correlation_id then
+  if sessionId then
     kong.service.request.set_header(sessionid, sessionId)
   end
   local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
