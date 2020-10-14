@@ -4,14 +4,14 @@ local EMPTY = tablex.readonly({})
 local splunkHost= os.getenv("SPLUNK_HOST")
 local gkong = kong
 
-function _M.serialize(ngx, conf, kong)
+function _M.serialize(ngx, conf)
   local ctx = ngx.ctx
   local var = ngx.var
   local req = ngx.req
 
-  if not kong then
-    kong = gkong
-  end
+  --if not kong then
+  local kong = gkong
+  --end
   
   -- Handles Nil Users
   local ConsumerUsername
