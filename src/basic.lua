@@ -40,7 +40,7 @@ function _M.serialize(ngx, position, kong)
         serviceName = ctx.service.name
   end
   local BackendLatencyCheck = ctx.KONG_WAITING_TIME or -1
-  if BackendLatencyCheck == -1 then
+  if ( BackendLatencyCheck == -1 ) then
     return {
       host = splunkHost,
       source = var.hostname,
@@ -113,7 +113,6 @@ function _M.serialize(ngx, position, kong)
       }  
     }
   end
-  
 end
 
 return _M
