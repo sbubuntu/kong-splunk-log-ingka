@@ -4,7 +4,7 @@ local EMPTY = tablex.readonly({})
 local splunkHost= os.getenv("SPLUNK_HOST")
 local gkong = kong
 
-function _M.serialize(ngx, position, kong)
+function _M.serialize(ngx, conf, kong)
   local ctx = ngx.ctx
   local var = ngx.var
   local req = ngx.req
@@ -47,10 +47,11 @@ function _M.serialize(ngx, position, kong)
       sourcetype = "AccessLog",
       time = req.start_time(),
       event = {
-        ApiRequest = {   
+        ApiResponse = {   
           CID = req.get_headers()["optum-cid-ext"],
+          Env: conf.apim_env,
+          WorkSpace: conf.workspace,
           HTTPMethod = kong.request.get_method(),
-          UniqueReqId = kong.ctx.plugin.correlation_id,
           RequestSizeSoumitra = var.request_length,
           RequestSize = var.request_length,
           RoutingURL = RouteUrl,
@@ -83,7 +84,7 @@ function _M.serialize(ngx, position, kong)
       sourcetype = "AccessLog",
       time = req.start_time(),
       event = {
-        ApiResponse = {   
+        ApiRequest = {   
           CID = req.get_headers()["optum-cid-ext"],
           HTTPMethod = kong.request.get_method(),
           UniqueReqId = kong.ctx.plugin.correlation_id,

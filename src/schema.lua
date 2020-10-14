@@ -17,6 +17,8 @@ return {
           { retry_count = { type = "integer", default = 10 }, },
           { queue_size = { type = "integer", default = 1 }, },
           { flush_timeout = { type = "number", default = 2 }, },
+          { apim_env = { type = "string", default = "dev" , one_of = { "dev", "stage", "prod" }, }, },
+          { workspace = { type = "string", default = "default"  }, },
     }, }, },
   },
 }
