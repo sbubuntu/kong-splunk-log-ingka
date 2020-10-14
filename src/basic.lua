@@ -47,7 +47,7 @@ function _M.serialize(ngx, conf, sessionId, kong)
       sourcetype = "AccessLog",
       time = req.start_time(),
       event = {
-        ApiResponse = {   
+        ApiRequest = {   
           CID = req.get_headers()["optum-cid-ext"],
           SessionId = sessionId,
           Env = conf.apim_env,
@@ -85,8 +85,9 @@ function _M.serialize(ngx, conf, sessionId, kong)
       sourcetype = "AccessLog",
       time = req.start_time(),
       event = {
-        ApiRequest = {   
+        ApiResponse = {   
           CID = req.get_headers()["optum-cid-ext"],
+          SessionId = sessionId,
           Env = conf.apim_env,
           WorkSpace = conf.workspace,
           HTTPMethod = kong.request.get_method(),
