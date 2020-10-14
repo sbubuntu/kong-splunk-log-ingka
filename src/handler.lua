@@ -1,4 +1,4 @@
-local basic_serializer = require "kong.plugins.kong-splunk-log.basic"
+local basic_serializer = require "kong.plugins.kong-splunk-log-ingka.basic"
 local BatchQueue = require "kong.tools.batch_queue"
 local cjson = require "cjson"
 local url = require "socket.url"
@@ -11,11 +11,11 @@ local table_concat = table.concat
 local fmt = string.format
 
 
-local KongSplunkLog = {}
+local KongSplunkLogIngka = {}
 
 
-KongSplunkLog.PRIORITY = 12
-KongSplunkLog.VERSION = "2.1.0"
+KongSplunkLogIngka.PRIORITY = 12
+KongSplunkLogIngka.VERSION = "2.1.0"
 
 
 local queues = {} -- one queue per unique plugin config
@@ -140,7 +140,7 @@ local function get_queue_id(conf)
 end
 
 
-function KongSplunkLog:log(conf)
+function KongSplunkLogIngka:log(conf)
   local entry = cjson_encode(basic_serializer.serialize(ngx))
 
   local queue_id = get_queue_id(conf)
@@ -175,4 +175,41 @@ function KongSplunkLog:log(conf)
   q:add(entry)
 end
 
-return KongSplunkLog
+
+function KongSplunkLogIngka:access(conf)
+  local entry = cjson_encode(basic_serializer.serialize(ngx))
+
+  local queue_id = get_queue_id(conf)
+  local q = queues[queue_id]
+  if not q then
+    -- batch_max_size <==> conf.queue_size
+    local batch_max_size = conf.queue_size or 1
+    local process = function(entries)
+      local payload = batch_max_size == 1
+                      and entries[1]
+                      or  json_array_concat(entries)
+  
+      return send_payload(self, conf, payload)
+    end
+
+    local opts = {
+      retry_count    = conf.retry_count,
+      flush_timeout  = conf.flush_timeout,
+      batch_max_size = batch_max_size,
+      process_delay  = 0,
+    }
+
+    local err
+    q, err = BatchQueue.new(process, opts)
+    if not q then
+      kong.log.err("could not create queue: ", err)
+      return
+    end
+    queues[queue_id] = q
+  end
+
+  q:add(entry)
+  
+end
+
+return KongSplunkLogIngka
