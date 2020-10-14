@@ -40,7 +40,7 @@ function _M.serialize(ngx, position, kong)
         serviceName = ctx.service.name
   end
 
-  if position == 'req' then
+  --if position == 'req' then
     return {
       host = splunkHost,
       source = var.hostname,
@@ -76,44 +76,8 @@ function _M.serialize(ngx, position, kong)
         }
       }  
     }
-  end
-  if position == 'res' then
-    return {
-        host = splunkHost,
-        source = var.hostname,
-        sourcetype = "AccessLog",
-        time = req.start_time(),
-        event = {
-          ApiResponse = {   
-            CID = req.get_headers()["optum-cid-ext"],
-            HTTPMethod = kong.request.get_method(),
-            UniqueReqId = kong.ctx.plugin.correlation_id,
-            RequestSizeSoumitra = var.request_length,
-            RequestSize = var.request_length,
-            RoutingURL = RouteUrl,
-            HTTPStatus = ngx.status,
-            ErrorMsg = kong.ctx.shared.errmsg,
-            GatewayHost = var.host,
-            Tries = (ctx.balancer_data or EMPTY).tries, --contains the list of (re)tries (successes and failures) made by the load balancer for this request
-            ResponseSize = var.bytes_sent,
-            BackendLatency = ctx.KONG_WAITING_TIME or -1, -- is the time it took for the final service to process the request
-            TotalLatency = var.request_time * 1000, --  is the time elapsed between the first bytes were read from the client and after the last bytes were sent to the client. Useful for detecting slow clients
-            KongLatency = {
-              AccessTime = (ctx.KONG_ACCESS_TIME or 0),     --Access phase, majority of Kong plugins
-              ReceiveTime = (ctx.KONG_RECEIVE_TIME or 0),   --Time it took before Kong had fully recieved all headers and response body from backend
-              RewriteTime = (ctx.KONG_REWRITE_TIME or 0),   --Rewrite phase (between Kong has response and time spent before returning it to client)
-              BalancerTime = (ctx.KONG_BALANCER_TIME or 0)  --Balancer time, DNS or upstream/target logic Kong hot paths here
-            },
-            Consumer = ConsumerUsername,
-            ClientIP = var.remote_addr,
-            URI = PathOnly,
-            ServiceName = serviceName,
-            GatewayPort = ((var.server_port == "8443" or var.server_port == "8000") and "443" or "8443"),
-            ClientCertEnd = var.ssl_client_v_end,
-          }
-        }   
-    }
-  end
+  --end
+  
 end
 
 return _M
