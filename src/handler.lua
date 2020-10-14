@@ -1,5 +1,6 @@
 local basic_serializer = require "kong.plugins.kong-splunk-log-ingka.basic"
 local BatchQueue = require "kong.tools.batch_queue"
+local uuid = require "kong.tools.utils".uuid
 local cjson = require "cjson"
 local url = require "socket.url"
 local http = require "resty.http"
@@ -10,6 +11,9 @@ local ngx_encode_base64 = ngx.encode_base64
 local table_concat = table.concat
 local fmt = string.format
 
+local worker_uuid
+local worker_counter
+local generators
 
 local KongSplunkLogIngka = {}
 
@@ -143,8 +147,10 @@ local function get_queue_id(conf)
 end
 
 
+
 function KongSplunkLogIngka:log(conf)
-  local entry = cjson_encode(basic_serializer.serialize(ngx, conf))
+  local sessionId = kong.request.get_header(sessionid)
+  local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
 
   local queue_id = get_queue_id(conf)
   local q = queues[queue_id]
@@ -180,7 +186,11 @@ end
 
 
 function KongSplunkLogIngka:access(conf)
-  local entry = cjson_encode(basic_serializer.serialize(ngx, conf))
+  sessionId= uuid()
+  if correlation_id then
+    kong.service.request.set_header(sessionid, sessionId)
+  end
+  local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
 
   local queue_id = get_queue_id(conf)
   local q = queues[queue_id]
