@@ -144,7 +144,7 @@ end
 
 
 function KongSplunkLogIngka:log(conf)
-  local entry = cjson_encode(basic_serializer.serialize(ngx,conf))
+  local entry = cjson_encode(basic_serializer.serialize(ngx))
 
   local queue_id = get_queue_id(conf)
   local q = queues[queue_id]
@@ -180,7 +180,7 @@ end
 
 
 function KongSplunkLogIngka:access(conf)
-  local entry = cjson_encode(basic_serializer.serialize(ngx,conf))
+  local entry = cjson_encode(basic_serializer.serialize(ngx))
 
   local queue_id = get_queue_id(conf)
   local q = queues[queue_id]
