@@ -49,8 +49,8 @@ function _M.serialize(ngx, conf, kong)
       event = {
         ApiResponse = {   
           CID = req.get_headers()["optum-cid-ext"],
-          Env: conf.apim_env,
-          WorkSpace: conf.workspace,
+          --Env: conf.apim_env,
+          --WorkSpace: conf.workspace,
           HTTPMethod = kong.request.get_method(),
           RequestSizeSoumitra = var.request_length,
           RequestSize = var.request_length,
