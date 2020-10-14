@@ -49,6 +49,7 @@ function _M.serialize(ngx, kong)
         CID = req.get_headers()["optum-cid-ext"],
           HTTPMethod = kong.request.get_method(),
           UniqueReqId = kong.ctx.plugin.correlation_id,
+          RequestSizeSoumitra = var.request_length,
           RequestSize = var.request_length,
           RoutingURL = RouteUrl,
           HTTPStatus = ngx.status,
