@@ -48,6 +48,7 @@ function _M.serialize(ngx, kong)
       event = {   
         CID = req.get_headers()["optum-cid-ext"],
           HTTPMethod = kong.request.get_method(),
+          UniqueReqId = kong.ctx.plugin.correlation_id,
           RequestSize = var.request_length,
           RoutingURL = RouteUrl,
           HTTPStatus = ngx.status,
