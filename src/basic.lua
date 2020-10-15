@@ -47,10 +47,11 @@ function _M.serialize(ngx, conf, sessionId, kong)
       sourcetype = "AccessLog",
       time = req.start_time(),
       event = {
-        ApiRequest = {   
+        ApiRequest = {
           CID = req.get_headers()["optum-cid-ext"],
           UniqueID = sessionId,
           Header = kong.request.get_headers(),
+          Header2 = req.get_headers(),
           Env = conf.apim_env,
           WorkSpace = conf.workspace,
           HTTPMethod = kong.request.get_method(),
