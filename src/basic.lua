@@ -4,7 +4,7 @@ local EMPTY = tablex.readonly({})
 local splunkHost= os.getenv("SPLUNK_HOST")
 local gkong = kong
 
-function _M.serialize(ngx, conf, sessionId, kong, key)
+function _M.serialize(ngx, conf, sessionId, kong)
   local ctx = ngx.ctx
   local var = ngx.var
   local req = ngx.req
@@ -51,7 +51,7 @@ function _M.serialize(ngx, conf, sessionId, kong, key)
           CID = req.get_headers()["optum-cid-ext"],
           SessionId = sessionId,
           Env = conf.apim_env,
-          key = key,
+          Key = ctx.authenticated_consumer,
           WorkSpace = conf.workspace,
           HTTPMethod = kong.request.get_method(),
           RequestSizeSoumitra = var.request_length,
@@ -70,7 +70,7 @@ function _M.serialize(ngx, conf, sessionId, kong, key)
             RewriteTime = (ctx.KONG_REWRITE_TIME or 0),   --Rewrite phase (between Kong has response and time spent before returning it to client)
             BalancerTime = (ctx.KONG_BALANCER_TIME or 0)  --Balancer time, DNS or upstream/target logic Kong hot paths here
           },
-          Consumer = ConsumerUsername,
+          ClientName = ConsumerUsername,
           ClientIP = var.remote_addr,
           URI = PathOnly,
           ServiceName = serviceName,
@@ -90,6 +90,7 @@ function _M.serialize(ngx, conf, sessionId, kong, key)
           CID = req.get_headers()["optum-cid-ext"],
           SessionId = sessionId,
           Env = conf.apim_env,
+          Key = Key = ctx.authenticated_consumer,
           WorkSpace = conf.workspace,
           HTTPMethod = kong.request.get_method(),
           --UniqueReqId = kong.ctx.plugin.correlation_id,
@@ -109,7 +110,7 @@ function _M.serialize(ngx, conf, sessionId, kong, key)
             RewriteTime = (ctx.KONG_REWRITE_TIME or 0),   --Rewrite phase (between Kong has response and time spent before returning it to client)
             BalancerTime = (ctx.KONG_BALANCER_TIME or 0)  --Balancer time, DNS or upstream/target logic Kong hot paths here
           },
-          Consumer = ConsumerUsername,
+          ClientName = ConsumerUsername,
           ClientIP = var.remote_addr,
           URI = PathOnly,
           ServiceName = serviceName,
