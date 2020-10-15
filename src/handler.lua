@@ -1,6 +1,6 @@
 local basic_serializer = require "kong.plugins.kong-splunk-log-ingka.basic"
 local BatchQueue = require "kong.tools.batch_queue"
---local uuid = require "kong.tools.utils".uuid
+local uuid = require "kong.tools.utils".uuid
 local cjson = require "cjson"
 local url = require "socket.url"
 local http = require "resty.http"
@@ -186,7 +186,7 @@ end
 
 
 function KongSplunkLogIngka:access(conf)
-  --local sessionId = uuid()
+  local sessionId = uuid()
   --if sessionId then
     --kong.service.request.set_header(sessionid, sessionId)
   --end
