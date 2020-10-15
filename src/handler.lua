@@ -5,7 +5,7 @@ local cjson = require "cjson"
 local url = require "socket.url"
 local http = require "resty.http"
 
-
+local kong = kong
 local cjson_encode = cjson.encode
 local ngx_encode_base64 = ngx.encode_base64
 local table_concat = table.concat
@@ -186,7 +186,7 @@ end
 
 
 function KongSplunkLogIngka:access(conf)
-  sessionId= uuid()
+  local sessionId = uuid()
   if sessionId then
     kong.service.request.set_header(sessionid, sessionId)
   end
