@@ -91,7 +91,7 @@ function _M.serialize(ngx, conf, sessionId, kong)
           Env = conf.apim_env,
           WorkSpace = conf.workspace,
           HTTPMethod = kong.request.get_method(),
-          UniqueReqId = kong.ctx.plugin.correlation_id,
+          --UniqueReqId = kong.ctx.plugin.correlation_id,
           RequestSizeSoumitra = var.request_length,
           RequestSize = var.request_length,
           RoutingURL = RouteUrl,
