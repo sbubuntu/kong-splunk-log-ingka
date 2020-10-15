@@ -91,7 +91,7 @@ function _M.serialize(ngx, conf, sessionId, kong)
           UniqueID = sessionId,
           XClientID = kong.request.get_headers()["x-client-id"],
           Env = conf.apim_env,
-          WorkSpace = conf.workspace,
+          KongWorkSpace = conf.workspace,
           HTTPMethod = kong.request.get_method(),
           RequestSizeSoumitra = var.request_length,
           RequestSize = var.request_length,
