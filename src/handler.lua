@@ -197,18 +197,6 @@ function KongSplunkLogIngka:access(conf)
   local sessionId = uuid()
   kong.ctx.plugin.sessionId = sessionId
   local headers = kong.request.get_headers()
-  local body
-  local key
-  local err
-  body, err = kong.request.get_body()
-  local v = headers[name]
-  if not v then
-    v = body[name]
-  end
-  if type(v) == "string" then
-    key = v
-  end
-
   --kong.service.request.set_header(sessionid, sessionId)
   local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
 

@@ -90,7 +90,7 @@ function _M.serialize(ngx, conf, sessionId, kong)
           CID = req.get_headers()["optum-cid-ext"],
           SessionId = sessionId,
           Env = conf.apim_env,
-          Key = Key = ctx.authenticated_consumer,
+          Key = ctx.authenticated_consumer,
           WorkSpace = conf.workspace,
           HTTPMethod = kong.request.get_method(),
           --UniqueReqId = kong.ctx.plugin.correlation_id,
