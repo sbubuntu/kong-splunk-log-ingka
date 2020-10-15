@@ -158,8 +158,7 @@ end
 
 
 function KongSplunkLogIngka:log(conf)
-  local sessionId = kong.request.get_header(sessionid)
-  --local sessionId = uuid()
+  local sessionId = kong.ctx.plugin.sessionId --kong.request.get_header(sessionid)
   local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
 
   local queue_id = get_queue_id(conf)
@@ -197,9 +196,8 @@ end
 
 function KongSplunkLogIngka:access(conf)
   local sessionId = uuid()
-  --if sessionId then
-  kong.service.request.set_header(sessionid, sessionId)
-  --end
+  kong.ctx.plugin.sessionId = sessionId
+  --kong.service.request.set_header(sessionid, sessionId)
   local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
 
   local queue_id = get_queue_id(conf)
