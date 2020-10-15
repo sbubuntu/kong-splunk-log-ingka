@@ -1,17 +1,17 @@
 local basic_serializer = require "kong.plugins.kong-splunk-log-ingka.basic"
 local BatchQueue = require "kong.tools.batch_queue"
-local uuid = require "kong.tools.utils".uuid
+--local uuid = require "kong.tools.utils".uuid
 local cjson = require "cjson"
 local url = require "socket.url"
 local http = require "resty.http"
 
-local kong = kong
+--local kong = kong
 local cjson_encode = cjson.encode
 local ngx_encode_base64 = ngx.encode_base64
 local table_concat = table.concat
 local fmt = string.format
 
-local worker_uuid
+--local worker_uuid
 local worker_counter
 local generators
 
