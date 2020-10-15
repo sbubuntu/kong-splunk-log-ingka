@@ -207,7 +207,7 @@ function KongSplunkLogIngka:access(conf)
   end
   if type(v) == "string" then
     key = v
-
+  end
 
   --kong.service.request.set_header(sessionid, sessionId)
   local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
