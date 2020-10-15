@@ -1,9 +1,11 @@
 local basic_serializer = require "kong.plugins.kong-splunk-log-ingka.basic"
 local BatchQueue = require "kong.tools.batch_queue"
-local uuid = require "kong.tools.utils".uuid
+--local uuid = require "kong.tools.utils".uuid
 local cjson = require "cjson"
 local url = require "socket.url"
 local http = require "resty.http"
+local random = math.random
+
 
 --local kong = kong
 local cjson_encode = cjson.encode
@@ -55,6 +57,13 @@ local function parse_url(host_url)
   return parsed_url
 end
 
+local function uuid()
+  local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+  return string.gsub(template, '[xy]', function (c)
+      local v = (c == 'x') and random(0, 0xf) or random(8, 0xb)
+      return string.format('%x', v)
+  end)
+end
 
 -- Sends the provided payload (a string) to the configured plugin host
 -- @return true if everything was sent correctly, falsy if error
@@ -139,8 +148,8 @@ local function get_queue_id(conf)
              conf.timeout,
              conf.keepalive,
              conf.retry_count,
-             conf.apim_env,
              conf.workspace,
+             conf.apim_env,
              conf.queue_size,
              conf.flush_timeout
              )

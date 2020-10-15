@@ -87,7 +87,7 @@ function _M.serialize(ngx, conf, sessionId, kong)
       event = {
         ApiResponse = {   
           CID = req.get_headers()["optum-cid-ext"],
-          --SessionId = sessionId,
+          SessionId = sessionId,
           Env = conf.apim_env,
           WorkSpace = conf.workspace,
           HTTPMethod = kong.request.get_method(),
