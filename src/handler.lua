@@ -6,7 +6,7 @@ local http = require "resty.http"
 local random = math.random
 
 
---local kong = kong
+local kong = kong
 local cjson_encode = cjson.encode
 local ngx_encode_base64 = ngx.encode_base64
 local table_concat = table.concat
@@ -157,7 +157,8 @@ end
 
 function KongSplunkLogIngka:log(conf)
   local sessionId = kong.ctx.plugin.sessionId --kong.request.get_header(sessionid)
-  local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
+  local key = 'key'
+  local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId, key))
 
   local queue_id = get_queue_id(conf)
   local q = queues[queue_id]
@@ -195,8 +196,21 @@ end
 function KongSplunkLogIngka:access(conf)
   local sessionId = uuid()
   kong.ctx.plugin.sessionId = sessionId
+  local headers = kong.request.get_headers()
+  local body
+  local key
+  local err
+  body, err = kong.request.get_body()
+  local v = headers[name]
+  if not v then
+    v = body[name]
+  end
+  if type(v) == "string" then
+    key = v
+
+
   --kong.service.request.set_header(sessionid, sessionId)
-  local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
+  local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId, key))
 
   local queue_id = get_queue_id(conf)
   local q = queues[queue_id]

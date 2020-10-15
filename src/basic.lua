@@ -4,7 +4,7 @@ local EMPTY = tablex.readonly({})
 local splunkHost= os.getenv("SPLUNK_HOST")
 local gkong = kong
 
-function _M.serialize(ngx, conf, sessionId, kong)
+function _M.serialize(ngx, conf, sessionId, kong, key)
   local ctx = ngx.ctx
   local var = ngx.var
   local req = ngx.req
@@ -51,6 +51,7 @@ function _M.serialize(ngx, conf, sessionId, kong)
           CID = req.get_headers()["optum-cid-ext"],
           SessionId = sessionId,
           Env = conf.apim_env,
+          key = key,
           WorkSpace = conf.workspace,
           HTTPMethod = kong.request.get_method(),
           RequestSizeSoumitra = var.request_length,
