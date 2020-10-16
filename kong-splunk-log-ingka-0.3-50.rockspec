@@ -1,5 +1,5 @@
 package = "kong-splunk-log-ingka"
-version = "0.3-49"
+version = "0.3-50"
 source = {
    url = "git+https://github.com/sbubuntu/kong-splunk-log-ingka.git"
 }
