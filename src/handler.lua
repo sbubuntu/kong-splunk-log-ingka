@@ -197,7 +197,7 @@ function KongSplunkLogIngka:access(conf)
   local sessionId = uuid()
   kong.ctx.plugin.sessionId = sessionId
   local headers = kong.request.get_headers()
-  --kong.service.request.set_header(sessionid, sessionId)
+  kong.service.request.set_header(sessionid, sessionId)
   local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
 
   local queue_id = get_queue_id(conf)
