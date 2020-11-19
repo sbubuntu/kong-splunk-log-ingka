@@ -90,7 +90,7 @@ function _M.serialize(ngx, conf, sessionId, kong)
       sourcetype = "AccessLog",
       time = req.start_time(),
       event = {
-        ApiResponse = {   
+        ApiResponse = {  
           CID = req.get_headers()["optum-cid-ext"],
           uniquerqid = uniqueReqID,
           ClientID = kong.request.get_headers()["x-client-id"],
