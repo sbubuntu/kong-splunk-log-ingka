@@ -34,9 +34,9 @@ function _M.serialize(ngx, conf, sessionId, kong)
       RouteUrl = ctx.balancer_data.host .. ":" .. ctx.balancer_data.port .. UpstreamPathOnly
   end
 
-  --local uniqueReqID = req.get_headers()["unique-rq-id"] 
-  --                    or kong.request.get_headers()["unique-rq-id"] 
-  --                  or sessionId
+  local uniqueReqID = req.get_headers()["unique-rq-id"] 
+                      or kong.request.get_headers()["unique-rq-id"] 
+                      or sessionId
 
   local serviceName
   --Service Resource (Kong >= 0.13.0)
@@ -53,10 +53,11 @@ function _M.serialize(ngx, conf, sessionId, kong)
       event = {
         ApiRequest = {
           CID = req.get_headers()["optum-cid-ext"],
-          --uniquerqid = uniqueReqID,
+          uniquerqid = uniqueReqID,
           ClientID = kong.request.get_headers()["x-client-id"],
-          --Env = conf.apim_env,
+          Env = conf.apim_env,
           kongRequestHeader = kong.request.get_headers(),
+          Context = ctx,
           WorkSpace = conf.workspace,
           HTTPMethod = kong.request.get_method(),
           RequestSize = var.request_length,
@@ -90,12 +91,13 @@ function _M.serialize(ngx, conf, sessionId, kong)
       sourcetype = "AccessLog",
       time = req.start_time(),
       event = {
-        ApiResponse = {  
+        ApiResponse = {   
           CID = req.get_headers()["optum-cid-ext"],
-          --uniquerqid = uniqueReqID,
+          uniquerqid = uniqueReqID,
           ClientID = kong.request.get_headers()["x-client-id"],
-          --Env = conf.apim_env,
+          Env = conf.apim_env,
           kongRequestHeader = kong.request.get_headers(),
+          Context = ctx,
           KongWorkSpace = conf.workspace,
           HTTPMethod = kong.request.get_method(),
           RequestSize = var.request_length,
