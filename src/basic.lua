@@ -53,11 +53,11 @@ function _M.serialize(ngx, conf, sessionId, kong)
       event = {
         ApiRequest = {
           CID = req.get_headers()["optum-cid-ext"],
-          uniquerqid = uniqueReqID,
+          --uniquerqid = uniqueReqID,
           ClientID = kong.request.get_headers()["x-client-id"],
           Env = conf.apim_env,
           kongRequestHeader = kong.request.get_headers(),
-          Context = ctx,
+          Context = kong.ctx.plugin.headers,
           WorkSpace = conf.workspace,
           HTTPMethod = kong.request.get_method(),
           RequestSize = var.request_length,
@@ -93,11 +93,11 @@ function _M.serialize(ngx, conf, sessionId, kong)
       event = {
         ApiResponse = {   
           CID = req.get_headers()["optum-cid-ext"],
-          uniquerqid = uniqueReqID,
+          --uniquerqid = uniqueReqID,
           ClientID = kong.request.get_headers()["x-client-id"],
           Env = conf.apim_env,
           kongRequestHeader = kong.request.get_headers(),
-          Context = ctx,
+          Context = kong.ctx.plugin.headers,
           KongWorkSpace = conf.workspace,
           HTTPMethod = kong.request.get_method(),
           RequestSize = var.request_length,
