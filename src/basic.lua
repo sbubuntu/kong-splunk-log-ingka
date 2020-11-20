@@ -4,7 +4,7 @@ local EMPTY = tablex.readonly({})
 local splunkHost= os.getenv("SPLUNK_HOST")
 local gkong = kong
 
-function _M.serialize(ngx, conf, sessionId, kong)
+function _M.serialize(ngx, conf)
   local ctx = ngx.ctx
   local var = ngx.var
   local req = ngx.req
@@ -34,9 +34,9 @@ function _M.serialize(ngx, conf, sessionId, kong)
       RouteUrl = ctx.balancer_data.host .. ":" .. ctx.balancer_data.port .. UpstreamPathOnly
   end
 
-  local uniqueReqID = req.get_headers()["unique-rq-id"] 
-                      or kong.request.get_headers()["unique-rq-id"] 
-                      or sessionId
+  --local uniqueReqID = req.get_headers()["unique-rq-id"] 
+   --                   or kong.request.get_headers()["unique-rq-id"] 
+   --                   or sessionId
 
   local serviceName
   --Service Resource (Kong >= 0.13.0)
