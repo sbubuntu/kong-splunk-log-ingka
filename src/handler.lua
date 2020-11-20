@@ -55,13 +55,13 @@ local function parse_url(host_url)
   return parsed_url
 end
 
---local function uuid()
- -- local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
- -- return string.gsub(template, '[xy]', function (c)
- --     local v = (c == 'x') and random(0, 0xf) or random(8, 0xb)
-  --    return string.format('%x', v)
- -- end)
---end
+local function uuid()
+  local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+  return string.gsub(template, '[xy]', function (c)
+      local v = (c == 'x') and random(0, 0xf) or random(8, 0xb)
+      return string.format('%x', v)
+  end)
+end
 
 -- Sends the provided payload (a string) to the configured plugin host
 -- @return true if everything was sent correctly, falsy if error
@@ -156,10 +156,10 @@ end
 
 
 function KongSplunkLogIngka:log(conf)
- -- local sessionId = kong.ctx.plugin.sessionId --kong.request.get_header(sessionid)
+  local sessionId = kong.ctx.plugin.sessionId --kong.request.get_header(sessionid)
   local key = 'key'
-  --local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
-  local entry = cjson_encode(basic_serializer.serialize(ngx, conf))
+  local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
+  --local entry = cjson_encode(basic_serializer.serialize(ngx, conf))
 
   local queue_id = get_queue_id(conf)
   local q = queues[queue_id]
@@ -195,12 +195,12 @@ end
 
 
 function KongSplunkLogIngka:access(conf)
-  --local sessionId = uuid()
-  --kong.ctx.plugin.sessionId = sessionId
+  local sessionId = uuid()
+  kong.ctx.plugin.sessionId = sessionId
   local headers = kong.request.get_headers()
   --kong.service.request.set_header(sessionid, sessionId)
-  --local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
-  local entry = cjson_encode(basic_serializer.serialize(ngx, conf))
+  local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
+  --local entry = cjson_encode(basic_serializer.serialize(ngx, conf))
 
   local queue_id = get_queue_id(conf)
   local q = queues[queue_id]
