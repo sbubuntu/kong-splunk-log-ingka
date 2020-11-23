@@ -80,7 +80,7 @@ function _M.serialize(ngx, conf, sessionId)
           ClientIP = var.remote_addr,
           URI = PathOnly,
           ServiceName = serviceName,
-          Provider = ctx.service.tags[0],
+          Provider = ctx.service.tags[1],
           GatewayPort = ((var.server_port == "8443" or var.server_port == "8000") and "443" or "8443"),
           ClientCertEnd = var.ssl_client_v_end,
         }
@@ -122,7 +122,7 @@ function _M.serialize(ngx, conf, sessionId)
           ClientIP = var.remote_addr,
           URI = PathOnly,
           ServiceName = serviceName,
-          Provider = ctx.service.tags[0],
+          Provider = ctx.service.tags[1],
           GatewayPort = ((var.server_port == "8443" or var.server_port == "8000") and "443" or "8443"),
           ClientCertEnd = var.ssl_client_v_end,
         }
