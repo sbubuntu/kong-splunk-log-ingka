@@ -52,7 +52,6 @@ function _M.serialize(ngx, conf, sessionId)
       time = req.start_time(),
       event = {
         ApiRequest = {
-          CID = req.get_headers()["optum-cid-ext"],
           ['Unique-RQ-ID'] = uniqueReqID,
           ClientID = kong.request.get_headers()["x-client-id"],
           Env = conf.apim_env,
@@ -79,6 +78,7 @@ function _M.serialize(ngx, conf, sessionId)
           ClientIP = var.remote_addr,
           URI = PathOnly,
           ServiceName = serviceName,
+          ServiceTags = ctx.service.tags,
           GatewayPort = ((var.server_port == "8443" or var.server_port == "8000") and "443" or "8443"),
           ClientCertEnd = var.ssl_client_v_end,
         }
@@ -92,7 +92,6 @@ function _M.serialize(ngx, conf, sessionId)
       time = req.start_time(),
       event = {
         ApiResponse = {   
-          CID = req.get_headers()["optum-cid-ext"],
           ['Unique-RQ-ID'] = uniqueReqID,
           ClientID = kong.request.get_headers()["x-client-id"],
           Env = conf.apim_env,
@@ -119,6 +118,7 @@ function _M.serialize(ngx, conf, sessionId)
           ClientIP = var.remote_addr,
           URI = PathOnly,
           ServiceName = serviceName,
+          ServiceTags = ctx.service.tags,
           GatewayPort = ((var.server_port == "8443" or var.server_port == "8000") and "443" or "8443"),
           ClientCertEnd = var.ssl_client_v_end,
         }
