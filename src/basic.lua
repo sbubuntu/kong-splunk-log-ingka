@@ -53,7 +53,7 @@ function _M.serialize(ngx, conf, sessionId)
       event = {
         ApiRequest = {
           ['Unique-RQ-ID'] = uniqueReqID,
-          ClientID = kong.request.get_headers()["x-client-id"],
+          ClientID = kong.request.get_headers()["X-Client-Id"],
           Env = conf.apim_env,
           kongRequestHeader = kong.request.get_headers(),
           Context = kong.ctx.plugin.headers,
@@ -74,12 +74,13 @@ function _M.serialize(ngx, conf, sessionId)
             RewriteTime = (ctx.KONG_REWRITE_TIME or 0),   --Rewrite phase (between Kong has response and time spent before returning it to client)
             BalancerTime = (ctx.KONG_BALANCER_TIME or 0)  --Balancer time, DNS or upstream/target logic Kong hot paths here
           },
-          routes = ctx.route,
+          RouteName = ctx.route.name,
           ClientName = ConsumerUsername,
+          Consumer = ctx.authenticated_consumer,
           ClientIP = var.remote_addr,
           URI = PathOnly,
           ServiceName = serviceName,
-          ServiceTags = ctx.service.tags,
+          Provider = ctx.service.tags[0],
           GatewayPort = ((var.server_port == "8443" or var.server_port == "8000") and "443" or "8443"),
           ClientCertEnd = var.ssl_client_v_end,
         }
@@ -94,7 +95,7 @@ function _M.serialize(ngx, conf, sessionId)
       event = {
         ApiResponse = {   
           ['Unique-RQ-ID'] = uniqueReqID,
-          ClientID = kong.request.get_headers()["x-client-id"],
+          ClientID = kong.request.get_headers()["X-Client-Id"],
           Env = conf.apim_env,
           kongRequestHeader = kong.request.get_headers(),
           Context = kong.ctx.plugin.headers,
@@ -115,12 +116,13 @@ function _M.serialize(ngx, conf, sessionId)
             RewriteTime = (ctx.KONG_REWRITE_TIME or 0),   --Rewrite phase (between Kong has response and time spent before returning it to client)
             BalancerTime = (ctx.KONG_BALANCER_TIME or 0)  --Balancer time, DNS or upstream/target logic Kong hot paths here
           },
-          routes = ctx.route,
+          RouteName = ctx.route.name,
           ClientName = ConsumerUsername,
+          Consumer = ctx.authenticated_consumer,
           ClientIP = var.remote_addr,
           URI = PathOnly,
           ServiceName = serviceName,
-          ServiceTags = ctx.service.tags,
+          Provider = ctx.service.tags[0],
           GatewayPort = ((var.server_port == "8443" or var.server_port == "8000") and "443" or "8443"),
           ClientCertEnd = var.ssl_client_v_end,
         }
