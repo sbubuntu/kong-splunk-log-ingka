@@ -74,6 +74,7 @@ function _M.serialize(ngx, conf, sessionId)
             RewriteTime = (ctx.KONG_REWRITE_TIME or 0),   --Rewrite phase (between Kong has response and time spent before returning it to client)
             BalancerTime = (ctx.KONG_BALANCER_TIME or 0)  --Balancer time, DNS or upstream/target logic Kong hot paths here
           },
+          routes = ctx.route,
           ClientName = ConsumerUsername,
           ClientIP = var.remote_addr,
           URI = PathOnly,
@@ -114,6 +115,7 @@ function _M.serialize(ngx, conf, sessionId)
             RewriteTime = (ctx.KONG_REWRITE_TIME or 0),   --Rewrite phase (between Kong has response and time spent before returning it to client)
             BalancerTime = (ctx.KONG_BALANCER_TIME or 0)  --Balancer time, DNS or upstream/target logic Kong hot paths here
           },
+          routes = ctx.route,
           ClientName = ConsumerUsername,
           ClientIP = var.remote_addr,
           URI = PathOnly,
