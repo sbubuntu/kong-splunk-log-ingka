@@ -195,7 +195,7 @@ end
 
 
 function KongSplunkLogIngka:access(conf)
-  local sessionId = uuid()
+  local sessionId = 'abcd-efgh'--uuid()
   kong.ctx.plugin.sessionId = sessionId
   local headers = kong.request.get_headers()
   --kong.service.request.set_header(sessionid, sessionId)
