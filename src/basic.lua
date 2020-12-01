@@ -43,6 +43,11 @@ function _M.serialize(ngx, conf, sessionId)
   if ctx.service ~= nil then
         serviceName = ctx.service.name
   end
+  local providerName
+  if ctx.service.tags ~= nil then
+    providerName = ctx.service.tags[1]
+  else  providerName= 'NA' 
+  end  
   local BackendLatencyCheck = ctx.KONG_WAITING_TIME or -1
   if ( BackendLatencyCheck == -1 ) then
     return {
@@ -77,7 +82,7 @@ function _M.serialize(ngx, conf, sessionId)
           ClientIP = var.remote_addr,
           URI = PathOnly,
           ServiceName = serviceName,
-          Provider = ctx.service.tags[1],
+          Provider = providerName,
           GatewayPort = ((var.server_port == "8443" or var.server_port == "8000") and "443" or "8443"),
           ClientCertEnd = var.ssl_client_v_end,
         }
@@ -116,7 +121,7 @@ function _M.serialize(ngx, conf, sessionId)
           ClientIP = var.remote_addr,
           URI = PathOnly,
           ServiceName = serviceName,
-          Provider = ctx.service.tags[1],
+          Provider = providerName,
           GatewayPort = ((var.server_port == "8443" or var.server_port == "8000") and "443" or "8443"),
           ClientCertEnd = var.ssl_client_v_end,
         }
