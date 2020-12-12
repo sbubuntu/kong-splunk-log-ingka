@@ -34,9 +34,7 @@ function _M.serialize(ngx, conf, sessionId)
       RouteUrl = ctx.balancer_data.host .. ":" .. ctx.balancer_data.port .. UpstreamPathOnly
   end
 
-  local uniqueReqID = req.get_headers()["unique-rq-id"] 
-                     or kong.request.get_headers()["unique-rq-id"] 
-                     or sessionId
+  local uniqueReqID = sessionId
 
   local serviceName
   --Service Resource (Kong >= 0.13.0)
