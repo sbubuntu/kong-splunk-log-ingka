@@ -193,7 +193,7 @@ end
 
 
 function KongSplunkLogIngka:access(conf)
-  local sessionId = req.get_headers()["unique-rq-id"] 
+  local sessionId = ngx.req.get_headers()["unique-rq-id"] 
                      or kong.request.get_headers()["unique-rq-id"] 
                      or uuid()
   --local sessionId = uuid()
