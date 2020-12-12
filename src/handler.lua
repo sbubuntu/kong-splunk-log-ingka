@@ -156,15 +156,13 @@ end
 
 
 function KongSplunkLogIngka:log(conf)
-  local sessionId = kong.ctx.plugin.sessionId --kong.request.get_header(sessionid)
+  local sessionId = kong.ctx.plugin.sessionId 
   local key = 'key'
   local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
-  --local entry = cjson_encode(basic_serializer.serialize(ngx, conf))
 
   local queue_id = get_queue_id(conf)
   local q = queues[queue_id]
   if not q then
-    -- batch_max_size <==> conf.queue_size
     local batch_max_size = conf.queue_size or 1
     local process = function(entries)
       local payload = batch_max_size == 1
@@ -195,7 +193,10 @@ end
 
 
 function KongSplunkLogIngka:access(conf)
-  local sessionId = uuid()
+  local sessionId = req.get_headers()["unique-rq-id"] 
+                     or kong.request.get_headers()["unique-rq-id"] 
+                     or uuid()
+  --local sessionId = uuid()
   kong.ctx.plugin.sessionId = sessionId
   local headers = kong.request.get_headers()
   local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
