@@ -80,7 +80,7 @@ function _M.serialize(ngx, conf, sessionId)
           ServiceName = serviceName,
           Provider = providerName,
           GatewayPort = ((var.server_port == "8443" or var.server_port == "8000") and "443" or "8443"),
-          ClientCertEnd = var.ssl_client_v_end,
+          ClientCertEnd = var.ssl_client_v_end
         }
       }  
     }
