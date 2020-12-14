@@ -156,7 +156,9 @@ end
 
 
 function KongSplunkLogIngka:log(conf)
-  local sessionId = kong.ctx.plugin.sessionId 
+  local sessionId = ngx.req.get_headers()["unique-rq-id"] 
+                     or kong.request.get_headers()["unique-rq-id"] 
+                     or uuid()
   local key = 'key'
   local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
 
@@ -192,45 +194,6 @@ function KongSplunkLogIngka:log(conf)
 end
 
 
-function KongSplunkLogIngka:access(conf)
-  local sessionId = ngx.req.get_headers()["unique-rq-id"] 
-                     or kong.request.get_headers()["unique-rq-id"] 
-                     or uuid()
-  --local sessionId = uuid()
-  kong.ctx.plugin.sessionId = sessionId
-  local headers = kong.request.get_headers()
-  local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
 
-  local queue_id = get_queue_id(conf)
-  local q = queues[queue_id]
-  if not q then
-    local batch_max_size = conf.queue_size or 1
-    local process = function(entries)
-      local payload = batch_max_size == 1
-                      and entries[1]
-                      or  json_array_concat(entries)
-  
-      return send_payload(self, conf, payload)
-    end
-
-    local opts = {
-      retry_count    = conf.retry_count,
-      flush_timeout  = conf.flush_timeout,
-      batch_max_size = batch_max_size,
-      process_delay  = 0,
-    }
-
-    local err
-    q, err = BatchQueue.new(process, opts)
-    if not q then
-      kong.log.err("could not create queue: ", err)
-      return
-    end
-    queues[queue_id] = q
-  end
-
-  q:add(entry)
-  
-end
 
 return KongSplunkLogIngka
