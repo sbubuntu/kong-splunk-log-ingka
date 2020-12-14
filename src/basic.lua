@@ -84,7 +84,6 @@ function _M.serialize(ngx, conf, sessionId)
         }
       }  
     }
-  end
 end
 
 return _M
