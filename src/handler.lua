@@ -3,17 +3,17 @@ local BatchQueue = require "kong.tools.batch_queue"
 local cjson = require "cjson"
 local url = require "socket.url"
 local http = require "resty.http"
-local random = math.random
-
+--local random = math.random
+local uuid = require("kong.tools.utils").uuid
 
 local kong = kong
 local cjson_encode = cjson.encode
-local ngx_encode_base64 = ngx.encode_base64
+--local ngx_encode_base64 = ngx.encode_base64
 local table_concat = table.concat
 local fmt = string.format
 
-local worker_counter
-local generators
+--local worker_counter
+--local generators
 
 local KongSplunkLogIngka = {}
 
@@ -55,18 +55,19 @@ local function parse_url(host_url)
   return parsed_url
 end
 
-local function uuid()
-  local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
-  return string.gsub(template, '[xy]', function (c)
-      local v = (c == 'x') and random(0, 0xf) or random(8, 0xb)
-      return string.format('%x', v)
-  end)
-end
+-- local function uuid()
+--   local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+--   return string.gsub(template, '[xy]', function (c)
+--       local v = (c == 'x') and random(0, 0xf) or random(8, 0xb)
+--       return string.format('%x', v)
+--   end)
+-- end
 
 -- Sends the provided payload (a string) to the configured plugin host
 -- @return true if everything was sent correctly, falsy if error
 -- @return error message if there was an error
-local function send_payload(self, conf, payload)
+--local function send_payload(self, conf, payload)  -- TODO: check; does this work without self?
+local function send_payload(conf, payload)
   local method = conf.method
   local timeout = conf.timeout
   local keepalive = conf.keepalive
@@ -138,7 +139,7 @@ local function json_array_concat(entries)
 end
 
 
-local function get_queue_id(conf)
+local function get_queue_id(conf) -- TODO: cache queue ID's instead of recreating on each request?
   return fmt("%s:%s:%s:%s:%s:%s:%s:%s",
              conf.splunk_endpoint,
              conf.method,
@@ -156,10 +157,8 @@ end
 
 
 function KongSplunkLogIngka:log(conf)
-  local sessionId = ngx.req.get_headers()["unique-rq-id"] 
-                     or kong.request.get_headers()["unique-rq-id"] 
-                     or uuid()
-  local key = 'key'
+  local sessionId = kong.request.get_header("unique-rq-id") or uuid()
+  --local key = 'key'
   local entry = cjson_encode(basic_serializer.serialize(ngx, conf, sessionId))
 
   local queue_id = get_queue_id(conf)
@@ -170,8 +169,9 @@ function KongSplunkLogIngka:log(conf)
       local payload = batch_max_size == 1
                       and entries[1]
                       or  json_array_concat(entries)
-  
-      return send_payload(self, conf, payload)
+
+      --return send_payload(self, conf, payload)
+      return send_payload(conf, payload)  -- TODO: check; does this work without self?
     end
 
     local opts = {
@@ -197,3 +197,4 @@ end
 
 
 return KongSplunkLogIngka
+
