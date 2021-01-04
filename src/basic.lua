@@ -12,25 +12,25 @@ function _M.serialize(ngx, conf, sessionId)
   if not kong then
     kong = gkong
   end
-  
+
   -- Handles Nil Users
   local ConsumerUsername
   if ctx.authenticated_consumer ~= nil then
     ConsumerUsername = ctx.authenticated_consumer.username
   end
-    
+
   local PathOnly
   if var.request_uri ~= nil then
-      PathOnly = string.gsub(var.request_uri,"%?.*","")
+      PathOnly = string.gsub(var.request_uri,"%?.*","")  -- TODO: dropping query, replace with ngx.re.xxxx
   end
-    
+
   local UpstreamPathOnly
   if var.upstream_uri ~= nil then
-      UpstreamPathOnly = string.gsub(var.upstream_uri,"%?.*","")
+      UpstreamPathOnly = string.gsub(var.upstream_uri,"%?.*","")  -- TODO: dropping query, replace with ngx.re.xxxx
   end
 
   local RouteUrl
-  if ctx.balancer_data ~= nil then 
+  if ctx.balancer_data ~= nil then
       RouteUrl = ctx.balancer_data.host .. ":" .. ctx.balancer_data.port .. UpstreamPathOnly
   end
 
@@ -44,19 +44,18 @@ function _M.serialize(ngx, conf, sessionId)
   local providerName
   if ctx.service.tags ~= nil then
     providerName = ctx.service.tags[1]
-  else  providerName= 'NA' 
-  end  
+  else  providerName= 'NA'
+  end
   return {
       host = splunkHost,
       source = var.hostname,
       sourcetype = "AccessLog",
       time = req.start_time(),
       event = {
-        kongApiLog = {   
+        kongApiLog = {
           ['Unique-RQ-ID'] = uniqueReqID,
           ClientID = kong.request.get_headers()["X-Client-Id"],
           Env = conf.apim_env,
-          KongWorkSpace = conf.workspace,
           HTTPMethod = kong.request.get_method(),
           RequestSize = var.request_length,
           RoutingURL = RouteUrl,
@@ -82,7 +81,7 @@ function _M.serialize(ngx, conf, sessionId)
           GatewayPort = ((var.server_port == "8443" or var.server_port == "8000") and "443" or "8443"),
           ClientCertEnd = var.ssl_client_v_end
         }
-      }  
+      }
     }
 end
 
