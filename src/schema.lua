@@ -1,7 +1,7 @@
 local typedefs = require "kong.db.schema.typedefs"
 
 return {
-  name = "kong-splunk-log",
+  name = "splunk-log",
   fields = {
     { protocols = typedefs.protocols_http },
     { config = {
@@ -18,7 +18,6 @@ return {
           { queue_size = { type = "integer", default = 1 }, },
           { flush_timeout = { type = "number", default = 2 }, },
           { apim_env = { type = "string", default = "dev" , one_of = { "dev", "stage", "prod" }, }, },
-          { workspace = { type = "string", default = "default"  }, },
     }, }, },
   },
 }
